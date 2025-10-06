@@ -1,4 +1,3 @@
-#文件夹 har文件->pcap文件 
 import os
 import json
 import io

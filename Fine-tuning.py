@@ -165,7 +165,7 @@ import gc
 gc.collect()
 gc.collect()
 
-# 重新加载模型并合并LoRA权重
+
 base_model = AutoModelForCausalLM.from_pretrained(
     model_name,
     low_cpu_mem_usage=True,
@@ -176,7 +176,6 @@ base_model = AutoModelForCausalLM.from_pretrained(
 model = PeftModel.from_pretrained(base_model, new_model)
 model = model.merge_and_unload()
 
-# 保存分词器
 tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "right"

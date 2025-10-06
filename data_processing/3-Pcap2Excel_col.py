@@ -4,7 +4,7 @@ import pandas as pd
 
 
 folder_path = r''
-tshark_path = r'/Applications/Wireshark/tshark.exe'
+tshark_path = r'./tshark.exe'
 excel_output_folder = r''
 
 def analyze_pcap(pcap_path, tshark_path):
@@ -39,7 +39,7 @@ def analyze_pcap(pcap_path, tshark_path):
 
                 prev_packet_time = float(packet.sniff_timestamp)
     except Exception as e:
-        print(f"[错误] 分析文件失败: {pcap_path}，原因: {e}")
+        print(f"{e}")
     finally:
         cap.close()
 
@@ -55,7 +55,6 @@ def save_to_excel(positives, negatives, intervals, excel_path):
     max_data_columns = max_excel_columns - 2
 
     if len(positives) > max_data_columns:
-        print(f"[警告] {excel_path} 数据列数超限，已裁剪至 {max_data_columns}")
         positives = positives[:max_data_columns]
         negatives = negatives[:max_data_columns]
         intervals = intervals[:max_data_columns]
@@ -95,17 +94,17 @@ def process_pcap_files(folder_path, tshark_path, excel_output_folder):
                 excel_file = os.path.join(output_folder, os.path.basename(pcap_file).rsplit('.', 1)[0] + '.xlsx')
 
                 if os.path.exists(excel_file):
-                    print(f"[跳过] {excel_file} 已存在，跳过 {pcap_file}")
+                    print(f"[Skip] {excel_file} already exists, skipping {pcap_file}")
                     continue
 
                 result = analyze_pcap(pcap_file, tshark_path)
                 if result is None:
-                    print(f"[跳过] {pcap_file} 无有效数据（全为0或不足10个），不生成 Excel")
+                    print(f"[Skip] {pcap_file} has no valid data (all zeros or less than 10 packets), Excel not generated")
                     continue
 
                 positives, negatives, intervals = result
                 save_to_excel(positives, negatives, intervals, excel_file)
-                print(f"[完成] 分析 {pcap_file}，保存至 {excel_file}")
+                print(f"[Done] Analyzed {pcap_file}, saved to {excel_file}")
 
 
 if __name__ == "__main__":

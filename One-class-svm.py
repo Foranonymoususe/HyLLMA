@@ -34,8 +34,6 @@ for item in dataset['train']:
 X = np.array(doc_vecs)
 
 
-print("Total embeddings:", X.shape) 
-print(X)  
 
 pca = PCA(n_components=1000)
 X_reduced = pca.fit_transform(X)
@@ -63,13 +61,11 @@ api.upload_file(
     repo_id=repo_id,
     token=hf_token
 )
-print("SVM 模型已成功上传到 Huggingface！")
 
 
 
 pca_path = "./pca_linear_1000.pkl"
 joblib.dump(pca, pca_path)
-print(f"PCA 对象已保存到 {pca_path}")
 
 api.upload_file(
     path_or_fileobj=pca_path,
